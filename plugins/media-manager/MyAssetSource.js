@@ -8,49 +8,50 @@ import Dialog from 'part:@sanity/components/dialogs/fullscreen'
 // See https://github.com/css-modules/css-modules for more info.
 import styles from './MyAssetSource.css'
 
-function MyAssetSource (props) {
-  const examples = [
-    { title: 'Official documentation', href: 'https://www.sanity.io/docs/custom-asset-sources'},
-    { title: 'Get started with this plugin', href: 'https://github.com/sanity-io/plugin-template-asset-source/blob/master/README.md'},
-    { title: 'Webcam (tutorial)', href: 'https://github.com/sanity-io/sanity-recipes/tree/master/examples/studio-with-custom-asset-source'},
-    { title: 'Unsplash (plugin)', href: 'https://github.com/sanity-io/sanity-plugin-asset-source-unsplash'},
-    { title: 'Cloudinary (plugin)', href: 'https://github.com/sanity-io/sanity-plugin-asset-source-cloudinary'},
-    { title: 'thispersondoesnotexist (plugin)', href: 'https://github.com/sanity-io/sanity-plugin-asset-source-thispersondoesnotexist'}
-  ]
+const imageData = [
+  {
+    kind: 'url',
+    value: 'https://i.imgur.com/hT1E3ZL.jpg',
+    assetDocumentProps: {
+      originalFilename: 'bamse.jpg', // Use this filename when saving the image.
+      source: {
+        source: 'imgur', // The source this image is from
+        id: 'hT1E3ZL', // A string that uniquely identifies it within the source
+        url: 'https://imgur.com/hT1E3ZL' // Where to find more info about the asset
+      },
+      description: 'Bamse the Cat',
+      creditLine: 'Bamse by Victoria'
+    }
+  },
+  {
+    kind: 'url',
+    value: 'https://images.unsplash.com/photo-1613061433656-1cbfcfb23d96',
+    assetDocumentProps: {
+      originalFilename: 'bamse.jpg', // Use this filename when saving the image.
+      source: {
+        source: 'unsplash', // The source this image is from
+        id: 'hT1E3ZL23', // A string that uniquely identifies it within the source
+        url: 'https://unsplash.com/photos/ZAjoPssESXg' // Where to find more info about the asset
+      },
+      description: 'Great Sand Dunes National Park and Reserve',
+      creditLine: 'By Ben Kelsey'
+    }
+  },
+]
 
-  const handleSelect = () => {
-    props.onSelect([{
-      kind: 'url',
-      value: 'https://i.imgur.com/hT1E3ZL.jpg',
-      assetDocumentProps: {
-        originalFilename: 'bamse.jpg', // Use this filename when saving the image.
-        source: {
-          source: 'imgur', // The source this image is from
-          id: 'hT1E3ZL', // A string that uniquely identifies it within the source
-          url: 'https://imgur.com/hT1E3ZL' // Where to find more info about the asset
-        },
-        description: 'Bamse the Cat',
-        creditLine: 'Bamse by Victoria'
-      }
-    }]
+function MyAssetSource(props) {
+  const handleSelect = (image) => {
+    props.onSelect([{ ...image }]
     )
   }
 
   return (
-    <Dialog title="My asset source" onClose={props.onClose} isOpen>
-      <h2>Hello custom asset source!</h2>
-      <p>Click this image to select it:</p>
+    <Dialog title="Browse Assets" onClose={props.onClose} isOpen>
       <div>
-        <img className={styles.image} src="https://i.imgur.com/hT1E3ZL.jpg" onClick={handleSelect} />
-      </div>
-      <p>Replace this content with your custom asset source. For help and inspiration check out:</p>
-      <ul>
-        {examples.map(example => (
-          <li key={example.title}>
-            <a href={example.href}>{example.title}</a>
-          </li>
+        {imageData && imageData.map(image => (
+          <img className={styles.image} src={image.value} onClick={() => handleSelect(image)} />
         ))}
-      </ul>
+      </div>
     </Dialog>
   )
 }
