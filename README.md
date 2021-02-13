@@ -1,2 +1,1 @@
-# aa-showcase-cms
-Showcase CMS
+# Academy of Art Showcase CMS
