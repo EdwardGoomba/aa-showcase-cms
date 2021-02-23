@@ -46,6 +46,7 @@ const Button = styled.div`
 `
 
 const AssetDetails = ({ data, onClick, onClose }) => {
+  console.log('Data: ', data)
   return (
     <Container>
       <Header title='Some title' onClose={onClose} />
@@ -53,12 +54,12 @@ const AssetDetails = ({ data, onClick, onClose }) => {
         <Image src={data.value} />
         <Details>
           <h4>Details</h4>
-          <p>Title</p>
-          <p>Caption</p>
-          <p>Alt Text</p>
-          <p>Description</p>
-          <p>Category</p>
-          <p>Tag</p>
+          <p>Title: {data.assetDocumentProps.title}</p>
+          <p>Caption: {data.assetDocumentProps.caption}</p>
+          <p>Alt Text: {data.assetDocumentProps.altText}</p>
+          <p>Description: {data.assetDocumentProps.description}</p>
+          <p>Category: {data.assetDocumentProps.category}</p>
+          <p>Tag: {data.assetDocumentProps.tag}</p>
         </Details>
       </DetailsContainer>
       <Button onClick={onClick}>Select</Button>

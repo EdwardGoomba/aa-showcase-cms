@@ -40,7 +40,12 @@ const imageData = [
         id: 'hT1E3ZL', // A string that uniquely identifies it within the source
         url: 'https://imgur.com/hT1E3ZL' // Where to find more info about the asset
       },
-      description: 'Bamse the Cat',
+      title: 'Bamse the Cat',
+      caption: 'One never knows what a cat thinks.',
+      altText: 'An image of a cat',
+      description: 'An orange face of a cat.',
+      category: 'animals',
+      tag: 'events',
       creditLine: 'Bamse by Victoria'
     }
   },
@@ -54,7 +59,12 @@ const imageData = [
         id: 'hT1E3ZL24', // A string that uniquely identifies it within the source
         url: 'https://unsplash.com/photos/l3N9Q27zULw' // Where to find more info about the asset
       },
-      description: 'Colored Pensils',
+      title: 'Colored Pensils',
+      caption: 'Color the world.',
+      altText: 'An image of a colored pencils.',
+      description: 'An array of pencils to choose.',
+      category: 'supplies',
+      tag: 'events',
       creditLine: 'By Jess Bailey'
     }
   },
@@ -68,7 +78,12 @@ const imageData = [
         id: 'hT1E3ZL12', // A string that uniquely identifies it within the source
         url: 'https://unsplash.com/photos/x_TJKVU1FJA' // Where to find more info about the asset
       },
-      description: 'Empty Hallway',
+      title: 'Empty Hallway',
+      caption: 'The New Normal',
+      altText: 'An image of an empty hallway.',
+      description: 'This image was taken at some point in a hallway.',
+      category: 'buildings',
+      tag: 'events',
       creditLine: 'By Kyo Azuma'
     }
   },
@@ -82,7 +97,12 @@ const imageData = [
         id: 'hT1E3Z345', // A string that uniquely identifies it within the source
         url: 'https://unsplash.com/photos/x_TJKVU1FJA' // Where to find more info about the asset
       },
-      description: 'Empty Hallway',
+      title: 'Empty Hallway 2',
+      caption: 'The New Normal',
+      altText: 'An image of an empty hallway.',
+      description: 'This image was taken at some point in a hallway.',
+      category: 'buildings',
+      tag: 'events',
       creditLine: 'By Kyo Azuma'
     }
   },
