@@ -39,7 +39,7 @@ const imageData = [
   },
 ]
 
-function MyAssetSource(props) {
+function MediaManager(props) {
   const handleSelect = (image) => {
     props.onSelect([{ ...image }]
     )
@@ -56,4 +56,4 @@ function MyAssetSource(props) {
   )
 }
 
-export default MyAssetSource
+export default MediaManager

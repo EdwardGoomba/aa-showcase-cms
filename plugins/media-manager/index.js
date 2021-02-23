@@ -1,10 +1,10 @@
-import React from 'react'
-import MyAssetSource from './MyAssetSource'
-import MyAssetSourceIcon from './MyAssetSourceIcon'
+import ImageIcon from 'part:@sanity/base/image-icon'
+
+import MediaManager from './MediaManager'
 
 export default {
-  title: 'MyAssetSource',
-  name: 'myassetsource',
-  icon: MyAssetSourceIcon,
-  component: MyAssetSource
+  title: 'Media Manager',
+  name: 'mediaManager',
+  icon: ImageIcon,
+  component: MediaManager
 }
