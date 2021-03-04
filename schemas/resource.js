@@ -12,6 +12,9 @@ export default {
       title: "Resource Media",
       name: "resourceMedia",
       type: "image",
+      options: {
+        hotspot: true
+      },
     }
   ]
 }
