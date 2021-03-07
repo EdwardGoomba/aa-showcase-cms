@@ -23,14 +23,14 @@ const Modal = styled.div`
 `
 
 const AssetContainer = styled.div`
-  max-height: 90vh;
+  max-height: 84vh;
   overflow-y: scroll;
 `
 
 const Folders = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px,1fr));
-  grid-auto-rows: 200px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-auto-rows: 240px;
   grid-gap: 1rem;
   padding: 1rem;
 `
@@ -116,9 +116,21 @@ const imageData = [
 
 const Browser = ({ onSelect, onClose }) => {
   const [folders, setFolders] = useState()
+  const [folderId, setFolderId] = useState()
 
-  const getData = async (url, body) => {
+  const getData = async (url = '') => {
     const response = await fetch(url)
+    return response.json();
+  }
+
+  const postData = async (url = '', body = {}) => {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body)
+    })
     return response.json();
   }
 
@@ -132,6 +144,27 @@ const Browser = ({ onSelect, onClose }) => {
 
   }, [])
 
+  useEffect(() => {
+    // fetch folder based on ID
+    if (folderId) {
+      console.log('Fetching folder based on : ', folderId)
+      const body = {
+        "id": `${folderId}`
+      }
+
+      postData('https://media-plugin.vercel.app/api/getFolder', body)
+        .then(data => {
+          console.log('Selected Folder Data: ', data);
+          setFolders(data)
+        });
+    }
+  }, [folderId])
+
+  const selectFolder = (id) => {
+    console.log('Selected Folder: ', id)
+    setFolderId(id)
+  }
+
   const handleSelect = (image) => {
     onSelect([{ ...image }]
     )
@@ -143,9 +176,10 @@ const Browser = ({ onSelect, onClose }) => {
         <Header title='Select Assets' onClose={onClose} />
         <AssetContainer>
           <Folders>
+            {!folders && <p>Loading...</p>}
             {folders && folders.map(folder => {
               console.log('Folder Data: ', folder)
-              return <Card>{folder.name}</Card>
+              return <Card key={folder.id} data={folder} selectFolder={selectFolder} />
             }
             )}
             {/* {imageData && imageData.map(image => (
