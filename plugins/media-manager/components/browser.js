@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 // components
 import Header from './header'
@@ -17,11 +17,17 @@ const Container = styled.div`
 
 const Modal = styled.div`
   max-width: 90vw;
+  max-height: 90vh;
   margin: 4rem auto;
   background: #FFFFFF;
 `
 
 const AssetContainer = styled.div`
+  max-height: 90vh;
+  overflow-y: scroll;
+`
+
+const Folders = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px,1fr));
   grid-auto-rows: 200px;
@@ -109,6 +115,23 @@ const imageData = [
 ]
 
 const Browser = ({ onSelect, onClose }) => {
+  const [folders, setFolders] = useState()
+
+  const getData = async (url, body) => {
+    const response = await fetch(url)
+    return response.json();
+  }
+
+  useEffect(() => {
+    console.log('Fetching DAM data')
+    getData('https://media-plugin.vercel.app/api/getAllFolders')
+      .then(data => {
+        console.log('Data: ', data);
+        setFolders(data)
+      });
+
+  }, [])
+
   const handleSelect = (image) => {
     onSelect([{ ...image }]
     )
@@ -119,9 +142,16 @@ const Browser = ({ onSelect, onClose }) => {
       <Modal>
         <Header title='Select Assets' onClose={onClose} />
         <AssetContainer>
-          {imageData && imageData.map(image => (
+          <Folders>
+            {folders && folders.map(folder => {
+              console.log('Folder Data: ', folder)
+              return <Card>{folder.name}</Card>
+            }
+            )}
+            {/* {imageData && imageData.map(image => (
             <Card data={image} onClick={() => handleSelect(image)} />
-          ))}
+          ))} */}
+          </Folders>
         </AssetContainer>
       </Modal>
     </Container>
