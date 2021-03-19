@@ -195,19 +195,6 @@ const Browser = ({ onSelect, onClose }) => {
   const getFileData = async (body) => {
     const fileData = await postData('https://media-plugin.vercel.app/api/searchAssets', body)
 
-    fileData.assets.map(async asset => {
-      const bodyData = {
-        "id": `${asset.id}`,
-        "size": "small"
-      }
-
-      if (asset.type !== 'other') {
-        const thumbnail = await postData('https://media-plugin.vercel.app/api/getThumbnail', bodyData)
-        asset.thumbnail = thumbnail
-      }
-
-      return asset
-    })
     setFiles(fileData.assets)
     setLoading(false)
   }
@@ -219,7 +206,7 @@ const Browser = ({ onSelect, onClose }) => {
 
       const body = {
         "folder_id": `${folderId}`,
-        "size": 50
+        "size": 20
       }
 
       getFileData(body)
@@ -239,8 +226,6 @@ const Browser = ({ onSelect, onClose }) => {
     onSelect([{ ...image }]
     )
   }
-
-  console.log('Data: ', files)
 
   return (
     <Container>
@@ -270,9 +255,6 @@ const Browser = ({ onSelect, onClose }) => {
             {files && files.map(file => {
               return <Card key={file.id} data={file} file handleSelect={handleSelect} />
             })}
-            {/* {imageData && imageData.map(image => (
-            <Card data={image} onClick={() => handleSelect(image)} />
-          ))} */}
           </Folders>
         </AssetContainer>
       </Modal>

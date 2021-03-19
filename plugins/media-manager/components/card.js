@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 // components
 import AssetDetails from './assetDetails'
 // img
-import thumbnail from '../img/folderThumbnail.jpg'
+import defaultThumbnail from '../img/folderThumbnail.jpg'
 
 // styles
 const Container = styled.div``
@@ -25,8 +25,20 @@ const Image = styled.img`
   height: 180px;
 `
 
+const postData = async (url = '', body = {}) => {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body)
+  })
+  return response.json();
+}
+
 const Card = ({ data, selectBranch, selectFolder, file, handleSelect }) => {
   const [detailedView, setDetailedView] = useState(false)
+  const [thumbnail, setThumbnail] = useState()
 
   const handleClick = (id) => {
     if (selectBranch) {
@@ -44,13 +56,29 @@ const Card = ({ data, selectBranch, selectFolder, file, handleSelect }) => {
     setDetailedView(false)
   }
 
+  const getThumbnail = async (body) => {
+    const thumbnailData = await postData('https://media-plugin.vercel.app/api/getThumbnail', body)
+    setThumbnail(thumbnailData)
+  }
+
+  useEffect(() => {
+    const body = {
+      "id": `${data.id}`,
+      "size": "small"
+    }
+
+    if (data.type !== 'other') {
+      getThumbnail(body)
+    }
+  }, [])
+
   return (
     <>
       <Container onClick={() => handleClick(data.id)}>
         {file && (
           <>
             <ImageContainer>
-              <Image src={data.thumbnail && data.thumbnail.url || thumbnail} />
+              <Image src={thumbnail && thumbnail.url || defaultThumbnail} />
             </ImageContainer>
             <p>{data.file.extension} {data.type}</p>
           </>
@@ -59,7 +87,7 @@ const Card = ({ data, selectBranch, selectFolder, file, handleSelect }) => {
         {!file &&
           <>
             <ImageContainer>
-              <Image src={data.cover_url || thumbnail} />
+              <Image src={data.cover_url || defaultThumbnail} />
             </ImageContainer>
             <p>{data.name}</p>
           </>
