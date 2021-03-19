@@ -166,7 +166,6 @@ const Browser = ({ onSelect, onClose }) => {
 
       postData('https://media-plugin.vercel.app/api/getFolder', body)
         .then(data => {
-          console.log('Selected Folder Data: ', data);
           setBranches(data)
           setLoading(false)
         });
@@ -175,7 +174,6 @@ const Browser = ({ onSelect, onClose }) => {
 
   const getFolderData = async (body) => {
     const folderData = await postData('https://media-plugin.vercel.app/api/getFolder', body)
-    console.log('Folder Data: ', folderData)
     setFolders(folderData)
     setLoading(false)
   }
@@ -183,7 +181,6 @@ const Browser = ({ onSelect, onClose }) => {
   useEffect(() => {
     // fetch folder based on ID
     if (folderId) {
-      console.log('Fetching folder based on: ', folderId)
       setLoading(true)
       setBranches()
 
@@ -199,13 +196,13 @@ const Browser = ({ onSelect, onClose }) => {
     const fileData = await postData('https://media-plugin.vercel.app/api/searchAssets', body)
 
     fileData.assets.map(async asset => {
-      const body = {
+      const bodyData = {
         "id": `${asset.id}`,
         "size": "small"
       }
 
       if (asset.type !== 'other') {
-        const thumbnail = await postData('https://media-plugin.vercel.app/api/getThumbnail', body)
+        const thumbnail = await postData('https://media-plugin.vercel.app/api/getThumbnail', bodyData)
         asset.thumbnail = thumbnail
       }
 
@@ -219,10 +216,9 @@ const Browser = ({ onSelect, onClose }) => {
     if (folderId) {
       setLoading(true)
       setFolders()
-      setFiles()
 
       const body = {
-        "id": `${folderId}`,
+        "folder_id": `${folderId}`,
         "size": 50
       }
 
@@ -231,12 +227,11 @@ const Browser = ({ onSelect, onClose }) => {
   }, [folderId])
 
   const selectBranch = (id) => {
-    console.log('Selected Branch: ', id)
     setBranchID(id)
   }
 
   const selectFolder = (id) => {
-    console.log('Selected Folder: ', id)
+    console.log('Selected folder: ', id)
     setFolderId(id)
   }
 
