@@ -25,10 +25,19 @@ const Image = styled.img`
   height: 180px;
 `
 
-const Card = ({ data, selectFolder }) => {
+const Card = ({ data, selectBranch, selectFolder, file, handleSelect }) => {
   const [detailedView, setDetailedView] = useState(false)
-  const viewDetails = () => {
-    setDetailedView(true)
+
+  const handleClick = (id) => {
+    if (selectBranch) {
+      selectBranch(id)
+    }
+    if (selectFolder) {
+      selectFolder(id)
+    }
+    if (file) {
+      setDetailedView(true)
+    }
   }
 
   const closeDetailView = () => {
@@ -37,15 +46,29 @@ const Card = ({ data, selectFolder }) => {
 
   return (
     <>
-      <Container onClick={() => selectFolder(data.id)}>
-        <ImageContainer>
-          <Image src={data.cover_url || thumbnail} />
-        </ImageContainer>
-        <p>{data.name}</p>
+      <Container onClick={() => handleClick(data.id)}>
+        {file && (
+          <>
+            <ImageContainer>
+              <Image src={data.thumbnail && data.thumbnail.url || thumbnail} />
+            </ImageContainer>
+            <p>{data.file.extension} {data.type}</p>
+          </>
+        )
+        }
+        {!file &&
+          <>
+            <ImageContainer>
+              <Image src={data.cover_url || thumbnail} />
+            </ImageContainer>
+            <p>{data.name}</p>
+          </>
+        }
+
       </Container>
-      {/* {detailedView &&
-        <AssetDetails data={data} onClick={onClick} onClose={closeDetailView} />
-      } */}
+      {detailedView &&
+        <AssetDetails data={data} onClick={handleSelect} onClose={closeDetailView} />
+      }
     </>
   )
 }

@@ -6,6 +6,7 @@ import Header from './header'
 // styles
 const Container = styled.div`
   display: grid;
+  grid-template-rows: 50px 1fr 50px;
   position: fixed;
   top: 6%;
   left: 5%;
@@ -36,6 +37,8 @@ const Button = styled.div`
   border-radius: 4px;
   padding: 1rem;
   margin: 1rem;
+  justify-content: center;
+  align-content: center;
 
   :hover {
     background: #FFFFFF;
@@ -51,15 +54,15 @@ const AssetDetails = ({ data, onClick, onClose }) => {
     <Container>
       <Header title='Some title' onClose={onClose} />
       <DetailsContainer>
-        <Image src={data.value} />
+        <Image src={data.thumbnail.url} />
         <Details>
           <h4>Details</h4>
-          <p>Title: {data.assetDocumentProps.title}</p>
-          <p>Caption: {data.assetDocumentProps.caption}</p>
-          <p>Alt Text: {data.assetDocumentProps.altText}</p>
-          <p>Description: {data.assetDocumentProps.description}</p>
-          <p>Category: {data.assetDocumentProps.category}</p>
-          <p>Tag: {data.assetDocumentProps.tag}</p>
+          {/* <p>Title: {data.assetDocumentProps.title}</p> */}
+          {/* <p>Caption: {data.assetDocumentProps.caption}</p> */}
+          {/* <p>Alt Text: {data.assetDocumentProps.altText}</p> */}
+          {/* <p>Description: {data.assetDocumentProps.description}</p> */}
+          {/* <p>Category: {data.assetDocumentProps.category}</p> */}
+          {/* <p>Tag: {data.assetDocumentProps.tag}</p> */}
         </Details>
       </DetailsContainer>
       <Button onClick={onClick}>Select</Button>

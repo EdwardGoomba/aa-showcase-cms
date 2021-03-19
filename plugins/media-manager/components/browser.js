@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import Loader from "react-loader-spinner";
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 // components
 import Header from './header'
 import Card from './card'
@@ -23,8 +25,13 @@ const Modal = styled.div`
 `
 
 const AssetContainer = styled.div`
-  max-height: 84vh;
+  height: 84vh;
   overflow-y: scroll;
+`
+
+const LoadingContainer = styled.div`
+  display: grid;
+  justify-content: center;
 `
 
 const Folders = styled.div`
@@ -115,8 +122,13 @@ const imageData = [
 ]
 
 const Browser = ({ onSelect, onClose }) => {
-  const [folders, setFolders] = useState()
+  const [loading, setLoading] = useState(true)
+  const [tree, setTree] = useState()
+  const [branchId, setBranchID] = useState()
+  const [branches, setBranches] = useState()
   const [folderId, setFolderId] = useState()
+  const [folders, setFolders] = useState()
+  const [files, setFiles] = useState()
 
   const getData = async (url = '') => {
     const response = await fetch(url)
@@ -135,30 +147,93 @@ const Browser = ({ onSelect, onClose }) => {
   }
 
   useEffect(() => {
-    console.log('Fetching DAM data')
     getData('https://media-plugin.vercel.app/api/getAllFolders')
       .then(data => {
-        console.log('Data: ', data);
-        setFolders(data)
+        setTree(data)
+        setLoading(false)
       });
 
   }, [])
 
   useEffect(() => {
-    // fetch folder based on ID
-    if (folderId) {
-      console.log('Fetching folder based on : ', folderId)
+    if (branchId) {
+      setLoading(true)
+      setTree()
+
       const body = {
-        "id": `${folderId}`
+        "id": `${branchId}`
       }
 
       postData('https://media-plugin.vercel.app/api/getFolder', body)
         .then(data => {
           console.log('Selected Folder Data: ', data);
-          setFolders(data)
+          setBranches(data)
+          setLoading(false)
         });
     }
+  }, [branchId])
+
+  const getFolderData = async (body) => {
+    const folderData = await postData('https://media-plugin.vercel.app/api/getFolder', body)
+    console.log('Folder Data: ', folderData)
+    setFolders(folderData)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    // fetch folder based on ID
+    if (folderId) {
+      console.log('Fetching folder based on: ', folderId)
+      setLoading(true)
+      setBranches()
+
+      const body = {
+        "id": `${folderId}`
+      }
+
+      getFolderData(body)
+    }
   }, [folderId])
+
+  const getFileData = async (body) => {
+    const fileData = await postData('https://media-plugin.vercel.app/api/searchAssets', body)
+
+    fileData.assets.map(async asset => {
+      const body = {
+        "id": `${asset.id}`,
+        "size": "small"
+      }
+
+      if (asset.type !== 'other') {
+        const thumbnail = await postData('https://media-plugin.vercel.app/api/getThumbnail', body)
+        asset.thumbnail = thumbnail
+      }
+
+      return asset
+    })
+    setFiles(fileData.assets)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    if (folderId) {
+      setLoading(true)
+      setFolders()
+      setFiles()
+
+      const body = {
+        "id": `${folderId}`,
+        "size": 50
+      }
+
+      getFileData(body)
+    }
+  }, [folderId])
+
+  const selectBranch = (id) => {
+    console.log('Selected Branch: ', id)
+    setBranchID(id)
+  }
 
   const selectFolder = (id) => {
     console.log('Selected Folder: ', id)
@@ -170,18 +245,36 @@ const Browser = ({ onSelect, onClose }) => {
     )
   }
 
+  console.log('Data: ', files)
+
   return (
     <Container>
       <Modal>
         <Header title='Select Assets' onClose={onClose} />
         <AssetContainer>
+          {loading &&
+            <LoadingContainer>
+              <Loader
+                type="Bars"
+                color="#ee3224"
+                height={50}
+                width={50}
+              />
+            </LoadingContainer>
+          }
           <Folders>
-            {!folders && <p>Loading...</p>}
-            {folders && folders.map(folder => {
-              console.log('Folder Data: ', folder)
-              return <Card key={folder.id} data={folder} selectFolder={selectFolder} />
-            }
+            {tree && tree.map(data =>
+              <Card key={data.id} data={data} selectBranch={selectBranch} />
             )}
+            {branches && branches.map(branch =>
+              <Card key={branch.id} data={branch} selectFolder={selectFolder} />
+            )}
+            {folders && folders.map(folder =>
+              <Card key={folder.id} data={folder} selectFolder={selectFolder} />
+            )}
+            {files && files.map(file => {
+              return <Card key={file.id} data={file} file handleSelect={handleSelect} />
+            })}
             {/* {imageData && imageData.map(image => (
             <Card data={image} onClick={() => handleSelect(image)} />
           ))} */}
