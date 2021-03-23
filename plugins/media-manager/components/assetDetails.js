@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import Loader from "react-loader-spinner";
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 // components
 import Header from './header'
 
@@ -11,8 +13,10 @@ const Container = styled.div`
   top: 6%;
   left: 5%;
   background: #FFFFFF;
-  min-height: 60%;
-  width: 90%;
+  min-height: 60vh;
+  max-height: 90vh;
+  width: 90vw;
+  overflow: scroll;
 `
 
 const DetailsContainer = styled.div`
@@ -24,6 +28,11 @@ const DetailsContainer = styled.div`
 
 const Image = styled.img`
   max-width: 600px;
+`
+
+const LoadingContainer = styled.div`
+  display: grid;
+  justify-content: center;
 `
 
 const Details = styled.div``
@@ -48,22 +57,83 @@ const Button = styled.div`
   }
 `
 
-const AssetDetails = ({ data, onClick, onClose }) => {
+const postData = async (url = '', body = {}) => {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body)
+  })
+  return response.json();
+}
+
+const AssetDetails = ({ data, onClick, onClose, thumbnail }) => {
+  const [loading, setLoading] = useState(true)
+  const [details, setDetails] = useState()
+  const [url, setUrl] = useState()
   console.log('Data: ', data)
+
+  const getDetails = async (body) => {
+    const details = await postData('https://media-plugin.vercel.app/api/getAssetDetails', body)
+    setDetails(details)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    const body = {
+      "id": `${data.id}`
+    }
+
+    getDetails(body)
+  }, [])
+
+  const formatDate = (timestamp) => {
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    const date = new Date(timestamp * 1000)
+    const year = date.getFullYear()
+    const month = monthNames[date.getMonth() + 1]
+    const day = date.getDate()
+
+    return `${month} ${day}, ${year}`
+  }
+
   return (
     <Container>
-      <Header title='Some title' onClose={onClose} />
+      <Header title={data.name} onClose={onClose} />
       <DetailsContainer>
-        <Image src={data.thumbnail.url} />
-        <Details>
-          <h4>Details</h4>
-          {/* <p>Title: {data.assetDocumentProps.title}</p> */}
-          {/* <p>Caption: {data.assetDocumentProps.caption}</p> */}
-          {/* <p>Alt Text: {data.assetDocumentProps.altText}</p> */}
-          {/* <p>Description: {data.assetDocumentProps.description}</p> */}
-          {/* <p>Category: {data.assetDocumentProps.category}</p> */}
-          {/* <p>Tag: {data.assetDocumentProps.tag}</p> */}
-        </Details>
+        <Image src={thumbnail.url} />
+        {loading &&
+          <LoadingContainer>
+            <Loader
+              type="Bars"
+              color="#ee3224"
+              height={50}
+              width={50}
+            />
+          </LoadingContainer>
+        }
+        {!loading &&
+          <Details>
+            <h4>Details</h4>
+            <p>Title: {data.name}</p>
+            <p>Upload Date: {data.date_created ? (
+              formatDate(data.date_created)
+            ) : 'No date provided'}</p>
+            {details && details.metadata.map(meta => {
+              if (meta.value !== []) {
+                // return <p>{meta.name}: {meta.value}</p>
+                if (meta.name === 'Description') {
+                  return <p>{meta.name}: {meta.value ? meta.value : 'No description'}</p>
+                }
+              }
+            })}
+            <p>Tags: {details && details.tags === [] ? 'No tags' : details.tags.map(tag => `${tag.tag} `)}</p>
+          </Details>
+        }
       </DetailsContainer>
       <Button onClick={onClick}>Select</Button>
     </Container>

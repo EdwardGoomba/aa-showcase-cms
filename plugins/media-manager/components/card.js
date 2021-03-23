@@ -62,13 +62,15 @@ const Card = ({ data, selectBranch, selectFolder, file, handleSelect }) => {
   }
 
   useEffect(() => {
-    const body = {
-      "id": `${data.id}`,
-      "size": "small"
-    }
+    if (data) {
+      const body = {
+        "id": `${data.id}`,
+        "size": "medium"
+      }
 
-    if (data.type !== 'other') {
-      getThumbnail(body)
+      if (data.type !== 'other') {
+        getThumbnail(body)
+      }
     }
   }, [])
 
@@ -95,7 +97,7 @@ const Card = ({ data, selectBranch, selectFolder, file, handleSelect }) => {
 
       </Container>
       {detailedView &&
-        <AssetDetails data={data} onClick={handleSelect} onClose={closeDetailView} />
+        <AssetDetails data={data} thumbnail={thumbnail} onClick={handleSelect} onClose={closeDetailView} />
       }
     </>
   )
