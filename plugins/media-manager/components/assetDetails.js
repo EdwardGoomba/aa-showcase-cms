@@ -72,12 +72,16 @@ const AssetDetails = ({ data, onClick, onClose, thumbnail }) => {
   const [loading, setLoading] = useState(true)
   const [details, setDetails] = useState()
   const [url, setUrl] = useState()
-  console.log('Data: ', data)
 
   const getDetails = async (body) => {
     const details = await postData('https://media-plugin.vercel.app/api/getAssetDetails', body)
     setDetails(details)
     setLoading(false)
+  }
+
+  const getUrl = async (body) => {
+    const url = await postData('https://media-plugin.vercel.app/api/getAssetLink', body)
+    setUrl(url)
   }
 
   useEffect(() => {
@@ -86,6 +90,16 @@ const AssetDetails = ({ data, onClick, onClose, thumbnail }) => {
     }
 
     getDetails(body)
+  }, [])
+
+  useEffect(() => {
+    const body = {
+      "data": [{
+        "id": `${data.id}`
+      }]
+    }
+
+    getUrl(body)
   }, [])
 
   const formatDate = (timestamp) => {
@@ -100,6 +114,13 @@ const AssetDetails = ({ data, onClick, onClose, thumbnail }) => {
 
     return `${month} ${day}, ${year}`
   }
+
+  const handleAssetSelect = () => {
+    onClose()
+    onClick(data, url)
+  }
+
+  console.log('url: ', url)
 
   return (
     <Container>
@@ -135,7 +156,7 @@ const AssetDetails = ({ data, onClick, onClose, thumbnail }) => {
           </Details>
         }
       </DetailsContainer>
-      <Button onClick={onClick}>Select</Button>
+      <Button onClick={() => handleAssetSelect(data, url)}>Select</Button>
     </Container>
   )
 }
