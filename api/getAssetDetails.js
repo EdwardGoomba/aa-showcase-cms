@@ -13,6 +13,7 @@ const getData = async (url) => {
 }
 
 module.exports = async (req, res) => {
+  // get around cors preflight options request for local dev
   const headers = {
     'Access-Control-Allow-Headers': 'Content-Type, Accept',
     'Access-Control-Allow-Origin': '*',
@@ -30,8 +31,16 @@ module.exports = async (req, res) => {
     'Origin, X-Requested-With, Content-Type, Accept'
   );
 
+  if (!req.body) {
+    console.error(`Error no post body`);
+    res.status(400).json({ error: 'Bad request' });
+    return;
+  }
+
+  const { body } = req
+  console.log('Requested Asset ID: ', body.id)
   try {
-    res.send(await getData('https://mediacenter.academyart.edu/api/v2/folders/list/'))
+    res.send(await getData(`https://mediacenter.academyart.edu/api/v2/assets/details/${body.id}?include_metadata=true&include_tags=true`))
   } catch (error) {
     console.error(error.stack);
     res.status(500).json({ error: error.message })

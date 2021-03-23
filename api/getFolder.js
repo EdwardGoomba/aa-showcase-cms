@@ -13,7 +13,30 @@ const getData = async (url) => {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
+  // get around cors preflight options request for local dev
+  const headers = {
+    'Access-Control-Allow-Headers': 'Content-Type, Accept',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    'Content-Type': 'application/json'
+  };
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, headers).end();
+    return;
+  }
+
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+
+  if (!req.body) {
+    console.error(`Error no post body`);
+    res.status(400).json({ error: 'Bad request' });
+    return;
+  }
+
   const { body } = req
   console.log('Requested Folder ID: ', body.id)
   try {
