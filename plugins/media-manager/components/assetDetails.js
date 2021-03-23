@@ -6,9 +6,19 @@ import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 import Header from './header'
 
 // styles
+const Background = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 200;
+  height: 100%;
+  width: 100%;
+`
+
 const Container = styled.div`
   display: grid;
-  grid-template-rows: 50px 1fr 50px;
+  grid-template-rows: 50px 1fr 64px;
   position: fixed;
   top: 6%;
   left: 5%;
@@ -123,41 +133,43 @@ const AssetDetails = ({ data, onClick, onClose, thumbnail }) => {
   console.log('url: ', url)
 
   return (
-    <Container>
-      <Header title={data.name} onClose={onClose} />
-      <DetailsContainer>
-        <Image src={thumbnail.url} />
-        {loading &&
-          <LoadingContainer>
-            <Loader
-              type="Bars"
-              color="#ee3224"
-              height={50}
-              width={50}
-            />
-          </LoadingContainer>
-        }
-        {!loading &&
-          <Details>
-            <h4>Details</h4>
-            <p>Title: {data.name}</p>
-            <p>Upload Date: {data.date_created ? (
-              formatDate(data.date_created)
-            ) : 'No date provided'}</p>
-            {details && details.metadata.map(meta => {
-              if (meta.value !== []) {
-                // return <p>{meta.name}: {meta.value}</p>
-                if (meta.name === 'Description') {
-                  return <p>{meta.name}: {meta.value ? meta.value : 'No description'}</p>
+    <Background>
+      <Container>
+        <Header title={data.name} onClose={onClose} />
+        <DetailsContainer>
+          <Image src={thumbnail.url} />
+          {loading &&
+            <LoadingContainer>
+              <Loader
+                type="Bars"
+                color="#ee3224"
+                height={50}
+                width={50}
+              />
+            </LoadingContainer>
+          }
+          {!loading &&
+            <Details>
+              <h4>Details</h4>
+              <p>Title: {data.name}</p>
+              <p>Upload Date: {data.date_created ? (
+                formatDate(data.date_created)
+              ) : 'No date provided'}</p>
+              {details && details.metadata.map(meta => {
+                if (meta.value !== []) {
+                  // return <p>{meta.name}: {meta.value}</p>
+                  if (meta.name === 'Description') {
+                    return <p>{meta.name}: {meta.value ? meta.value : 'No description'}</p>
+                  }
                 }
-              }
-            })}
-            <p>Tags: {details && details.tags === [] ? 'No tags' : details.tags.map(tag => `${tag.tag} `)}</p>
-          </Details>
-        }
-      </DetailsContainer>
-      <Button onClick={() => handleAssetSelect(data, url)}>Select</Button>
-    </Container>
+              })}
+              <p>Tags: {details && details.tags === [] ? 'No tags' : details.tags.map(tag => `${tag.tag} `)}</p>
+            </Details>
+          }
+        </DetailsContainer>
+        <Button onClick={() => handleAssetSelect(data, url)}>Select</Button>
+      </Container>
+    </Background>
   )
 }
 
