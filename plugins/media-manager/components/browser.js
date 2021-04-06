@@ -67,13 +67,16 @@ const Browser = ({ onSelect, onClose }) => {
     return response.json();
   }
 
-  useEffect(() => {
+  const getAllFolders = () => {
     getData('https://media-plugin.vercel.app/api/getAllFolders')
       .then(data => {
         setTree(data)
         setLoading(false)
       });
+  }
 
+  useEffect(() => {
+    getAllFolders()
   }, [])
 
   useEffect(() => {
@@ -170,10 +173,26 @@ const Browser = ({ onSelect, onClose }) => {
     onClose()
   }
 
+  const switchSource = (event) => {
+    console.log('Switching Source!')
+    if (event.target.value === 'kaltura') {
+      setTree()
+      setBranchID()
+      setBranches()
+      setFolderId()
+      setFolders()
+      setFiles()
+      console.log('KALTURA IN DA HOUSE')
+    } else {
+      setLoading(true)
+      getAllFolders()
+    }
+  }
+
   return (
     <Container>
       <Modal>
-        <Header title='Select Assets' onClose={onClose} />
+        <Header title='Select Assets' onClose={onClose} switchSource={switchSource} />
         <AssetContainer>
           {loading &&
             <LoadingContainer>

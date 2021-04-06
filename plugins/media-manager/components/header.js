@@ -13,6 +13,23 @@ const Title = styled.h4`
   margin: 0;
 `
 
+const Actions = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  justify-self: end;
+`
+
+const Source = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  p {
+    padding: 0;
+    margin: 0;
+    padding-right: 0.5rem;
+  }
+`
+
 const Button = styled.button`
   display: grid;
   justify-self: end;
@@ -26,11 +43,20 @@ const Button = styled.button`
   }
 `
 
-const Header = ({ title, onClose }) => {
+const Header = ({ title, onClose, switchSource }) => {
   return (
     <Container>
       <Title>{title}</Title>
-      <Button onClick={onClose}><CloseIcon style={{ fontSize: 20 }} /></Button>
+      <Actions>
+        <Source>
+          <p>Select Source:</p>
+          <select onChange={() => switchSource(event)}>
+            <option value='datadwell'>Datadwell</option>
+            <option value='kaltura'>Kaltura</option>
+          </select>
+        </Source>
+        <Button onClick={onClose}><CloseIcon style={{ fontSize: 20 }} /></Button>
+      </Actions>
     </Container>
   )
 }
