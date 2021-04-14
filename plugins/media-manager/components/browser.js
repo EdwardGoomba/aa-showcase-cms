@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Loader from "react-loader-spinner";
+import axios from 'axios';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 // components
 import Header from './header'
@@ -52,8 +53,22 @@ const Browser = ({ onSelect, onClose }) => {
   const [files, setFiles] = useState()
 
   const getData = async (url = '') => {
-    const response = await fetch(url)
-    return response.json();
+    try {
+      const response = await axios({
+        method: 'get',
+        url: url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer api_key-euporie-b624d74c31c2ab3025bb1126de0206f8f281944d',
+          'Access-Control-Allow-Headers': 'Content-Type, X-Auth-Token, Origin, Authorization',
+          'Access-Control-Allow-Origin': 'http://localhost:3333, localhost, https://media-manager.sanity.studio',
+          'Access-Control-Allow-Methods': 'POST,GET,OPTIONS,PUT,PATCH,DELETE',
+        },
+      });
+      return response.json();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const postData = async (url = '', body = {}) => {
@@ -69,7 +84,8 @@ const Browser = ({ onSelect, onClose }) => {
 
   const getAllFolders = async () => {
     try {
-      const data = await getData('https://media-plugin.vercel.app/api/getAllFolders')
+      // const data = await getData('https://media-plugin.vercel.app/api/getAllFolders')
+      const data = await getData('https://mediacenter.academyart.edu/api/v2/folders/list/')
       setTree(data)
       setLoading(false)
     } catch (error) {
