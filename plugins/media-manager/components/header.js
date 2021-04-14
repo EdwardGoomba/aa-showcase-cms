@@ -26,7 +26,7 @@ const Button = styled.button`
   }
 `
 
-const Header = ({ title, onClose, switchSource }) => {
+const Header = ({ title, onClose }) => {
   return (
     <Container>
       <Title>{title}</Title>
