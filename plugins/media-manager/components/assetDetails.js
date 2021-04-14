@@ -131,6 +131,18 @@ const AssetDetails = ({ data, onClick, onClose, thumbnail }) => {
   }
 
   console.log('url: ', url)
+  console.log('Details: ', details)
+
+  // TODO: implement following metadata
+  // Student ID - DONE
+  // Artist Name - DONE
+  // Upload Date - DONE
+  // Uploader(user that uploaded the file)
+  // Path(the file path in the DAM)
+  // School - DONE
+  // Title - DONE
+  // Description - DONE
+  // Filesize - DONE
 
   return (
     <Background>
@@ -158,12 +170,18 @@ const AssetDetails = ({ data, onClick, onClose, thumbnail }) => {
               {details && details.metadata.map(meta => {
                 if (meta.value !== []) {
                   // return <p>{meta.name}: {meta.value}</p>
-                  if (meta.name === 'Description') {
-                    return <p>{meta.name}: {meta.value ? meta.value : 'No description'}</p>
+                  if (
+                    meta.name === 'Description' ||
+                    meta.name === 'Student ID' ||
+                    meta.name === 'Artist Name' ||
+                    meta.name === 'School' ||
+                    meta.name === 'Size' ||
+                    meta.name === 'Title'
+                  ) {
+                    return <p>{meta.name}: {meta.value ? meta.value : 'No data'}</p>
                   }
                 }
               })}
-              <p>Tags: {details && details.tags === [] ? 'No tags' : details.tags.map(tag => `${tag.tag} `)}</p>
             </Details>
           }
         </DetailsContainer>
