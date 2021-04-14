@@ -51,19 +51,8 @@ const Browser = ({ onSelect, onClose }) => {
   const [folders, setFolders] = useState()
   const [files, setFiles] = useState()
 
-  const getData = async (url) => {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer api_key-euporie-b624d74c31c2ab3025bb1126de0206f8f281944d',
-        'Access-Control-Allow-Headers': 'Content-Type, Accept',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        'Content-Type': 'application/json'
-      },
-    })
-
+  const getData = async (url = '') => {
+    const response = await fetch(url)
     return response.json();
   }
 
@@ -80,7 +69,7 @@ const Browser = ({ onSelect, onClose }) => {
 
   const getAllFolders = async () => {
     try {
-      const data = await getData('https://mediacenter.academyart.edu/api/v2/folders/list/')
+      const data = await getData('https://media-plugin.vercel.app/api/getAllFolders')
       setTree(data)
       setLoading(false)
     } catch (error) {
