@@ -173,26 +173,10 @@ const Browser = ({ onSelect, onClose }) => {
     onClose()
   }
 
-  const switchSource = (event) => {
-    console.log('Switching Source!')
-    if (event.target.value === 'kaltura') {
-      setTree()
-      setBranchID()
-      setBranches()
-      setFolderId()
-      setFolders()
-      setFiles()
-      console.log('KALTURA IN DA HOUSE')
-    } else {
-      setLoading(true)
-      getAllFolders()
-    }
-  }
-
   return (
     <Container>
       <Modal>
-        <Header title='Select Assets' onClose={onClose} switchSource={switchSource} />
+        <Header title='Select Assets' onClose={onClose} />
         <AssetContainer>
           {loading &&
             <LoadingContainer>
